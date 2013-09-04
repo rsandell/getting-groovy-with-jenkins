@@ -94,7 +94,7 @@ public static void rule_closedBranchName (AbstractProject p, List<String> alerts
 }
 
 public static void rule_testRule (AbstractProject p, List<String> alerts) {
-    if(p.name.toLowerCase().equals("IAmOld_test")) {
+    if(p.name.toLowerCase().equals("iamold_test")) {
         alerts.add("Name of project is " + p.name);
         alerts.add("I said so!");
     }
