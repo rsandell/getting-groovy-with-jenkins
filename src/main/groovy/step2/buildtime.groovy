@@ -44,24 +44,21 @@ String header = "displayName,startTime,duration;"
 println(header)
 pAll.println(header)
 Jenkins.instance.items.each { TopLevelItem project ->
-    if (project.name.startsWith("offbuild")) {
-
+    if (project.name.startsWith("Matrix")) {
         long total = 0
         int count = 0
-        project.builds.each { build ->
+        project.builds.each { AbstractBuild build ->
             if (build.result == Result.SUCCESS) {
                 total += build.duration
                 count++
-                String out = build.fullDisplayName + "," + build.getTimeInMillis()
-                             + "," + build.duration + ";"
+                String out = "${build.fullDisplayName},${build.getTimeInMillis()},${build.duration};"
                 println(out)
                 pAll.println(out)
             }
         }
         if (project.builds != null && count > 0) {
             long average = total / count;
-            totals.push(project.name + "," + total + "," + project.builds.size() +
-                        "," + average + ";")
+            totals.push("${project.name},${total},${count},${average};")
         }
     }
 }
