@@ -40,7 +40,7 @@ def calcedSavedBuilds = 0
 def actualRemovedBuilds = 0
 
 Util.filter(Jenkins.instance.getItems(), Job.class).each{project ->
-    def rotator = project.getLogRotator()
+    def rotator = project.getBuildDiscarder()
     def thisIsIt = false
     if (rotator == null) {
         count = count + 1
@@ -53,7 +53,8 @@ Util.filter(Jenkins.instance.getItems(), Job.class).each{project ->
         }
         println("X  " + project.getFullName())
         thisIsIt = true
-    } else if (rotator.getDaysToKeep() < 0 && rotator.getNumToKeep() < 0) {
+    } else if (rotator instanceof LogRotator &&
+               rotator.getDaysToKeep() < 0 && rotator.getNumToKeep() < 0) {
         count = count + 1
         if (project instanceof AbstractProject && project.disabled) {
             disabled = disabled + 1
@@ -73,7 +74,7 @@ Util.filter(Jenkins.instance.getItems(), Job.class).each{project ->
         }
         println("\tCreated: " + rotator)
         def numBuilds = project.getBuilds().size()
-        project.setLogRotator(rotator)
+        project.setBuildDiscarder(rotator)
         project.save()
         println("\tSaved: " + project.getFullName())
         if (numBuilds > numbersToKeepTh) {
